@@ -1,17 +1,23 @@
 #include "GameScene.h"
 
+
+
 using namespace KamataEngine;
+void GameScene::Initialize() { 
+	camera.Initialize(); 
 
-void GameScene::Initialize() {
-
+	player = std::make_unique<Player>();
+	player->Initialize();
 }
 
-void GameScene::Update() {}
+void GameScene::Update() { 
+	player->Update(); 
+}
 
 void GameScene::Draw() { 
 	Model::PreDraw();
 
-
+	player->Draw(camera);
 
 	Model::PostDraw();
 }

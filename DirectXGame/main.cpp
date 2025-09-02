@@ -17,17 +17,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	gameScene->Initialize();
 
+	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
+
 	while (true) {
+
+		if (KamataEngine::Update()) {
+			break;
+		}
+
+		imGuiManager->Begin();
+
 
 		gameScene->Update();
 
+
+		imGuiManager->End();
 
 		dxCommon->PreDraw();
 		
 		gameScene->Draw();
 
+		imGuiManager->Draw();
+
 		dxCommon->PostDraw();
 	}
+
+	KamataEngine::Finalize();
 
 	return 0;
 }
