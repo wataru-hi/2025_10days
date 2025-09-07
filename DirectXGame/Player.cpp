@@ -25,6 +25,11 @@ void Player::Update() {
 	CheckKey();
 	InputMove();
 
+	CollisionMapInfo collisionMapInfo = {};
+	collisionMapInfo.move = velocity_;
+	collisionMapInfo.landing = false;
+	collisionMapInfo.hitWall = false;
+
 	if (!isGhostMode)
 		worldTransform.translation_ += velocity_;
 	else
@@ -124,6 +129,9 @@ void Player::InputMove() {
 	} else {
 		velocity_.x *= (1.0f - kDeceleration);
 	}
+	if (std::abs(velocity_.x) <= 0.01f) {
+		velocity_.x = 0.0f;
+	}
 
 }
 
@@ -149,3 +157,19 @@ void Player::CheckKey() {
 	if (Input::GetInstance()->TriggerKey(DIK_Q))
 		isPushGhostModeKey = true;
 }
+
+void Player::CheckMapCollision(CollisionMapInfo info) {
+	CheckMapCollisionUp(info);
+	CheckMapCollisionDown(info);
+	CheckMapCollisionRight(info);
+	CheckMapCollisionLeft(info);
+}
+
+void Player::CheckMapCollisionUp(CollisionMapInfo info) {
+}
+
+void Player::CheckMapCollisionDown(CollisionMapInfo info) {}
+
+void Player::CheckMapCollisionRight(CollisionMapInfo info) {}
+
+void Player::CheckMapCollisionLeft(CollisionMapInfo info) {}

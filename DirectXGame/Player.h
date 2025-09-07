@@ -6,6 +6,24 @@ enum class LRDirection {
 	kLeft,
 };
 
+struct CollisionMapInfo {
+	bool ceiling = false;
+	bool landing = false;
+	bool hitWall = false;
+	Vector3 move;
+};
+
+enum class Corner {
+	kRightBottom,
+	kLeftBottom,
+	kRightTop,
+	kLeftTop,
+
+	kNumCorner
+};
+
+class MapChip;
+
 class Player {
 public:
 	Player() {};
@@ -15,10 +33,18 @@ public:
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
 
+	void SetMapChipData(MapChip* mapChip) { mapChipData = std::unique_ptr<MapChip>(mapChip); }
+
 private:
 	void InputMove();
 	
 	void CheckKey();
+
+	void CheckMapCollision(CollisionMapInfo info);
+	void CheckMapCollisionUp(CollisionMapInfo info);
+	void CheckMapCollisionDown(CollisionMapInfo info);
+	void CheckMapCollisionRight(CollisionMapInfo info);
+	void CheckMapCollisionLeft(CollisionMapInfo info);
 
 	std::unique_ptr<KamataEngine::Model> model;
 
@@ -26,6 +52,10 @@ private:
 	KamataEngine::WorldTransform ghostWorldTransform;
 
 	KamataEngine::ObjectColor* color;
+
+
+	 std::unique_ptr<MapChip> mapChipData;
+
 
 	KamataEngine::Vector3 velocity_ = {};
 
@@ -39,7 +69,7 @@ private:
 	static inline const float kVerticalAttenuation = 0.08f;  // 上下移動加速度
 	static inline const float kVerticalLimitRusSpeed = 0.4f; // 上下移動最大速度
 
-	float turnTimer_ = 0.0f;
+	float turnTimer_ = 0.0f; 
 	float turnFirstRotationY_ = 0.0f;
 	static inline const float kTimeTurn_ = 0.3f;
 

@@ -8,6 +8,9 @@ void GameScene::Initialize() {
 
 	player = std::make_unique<Player>();
 	player->Initialize();
+
+	map = std::make_unique<MapChip>();
+	map->Initialize("Resources/stage1.csv");
 }
 
 void GameScene::Update() { 
@@ -16,6 +19,8 @@ void GameScene::Update() {
 
 void GameScene::Draw() { 
 	Model::PreDraw();
+
+	map->Draw(camera);
 
 	player->Draw(camera);
 
