@@ -10,7 +10,7 @@ struct CollisionMapInfo {
 	bool ceiling = false;
 	bool landing = false;
 	bool hitWall = false;
-	Vector3 move;
+	KamataEngine::Vector3 move;
 };
 
 enum class Corner {
@@ -27,7 +27,7 @@ class MapChip;
 class Player {
 public:
 	Player() {};
-	~Player() {};
+	~Player() { };
 
 	void Initialize();
 	void Update();
@@ -38,7 +38,9 @@ public:
 private:
 	void InputMove();
 	
-	void CheckKey();
+    void CheckKey();
+
+	KamataEngine::Vector3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
 
 	void CheckMapCollision(CollisionMapInfo info);
 	void CheckMapCollisionUp(CollisionMapInfo info);
@@ -68,6 +70,10 @@ private:
 	static inline const float kDeceleration = 0.2f;		// 横移動減速速度
 	static inline const float kVerticalAttenuation = 0.08f;  // 上下移動加速度
 	static inline const float kVerticalLimitRusSpeed = 0.4f; // 上下移動最大速度
+
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+	static inline const float kBlank = 0.04f;
 
 	float turnTimer_ = 0.0f; 
 	float turnFirstRotationY_ = 0.0f;

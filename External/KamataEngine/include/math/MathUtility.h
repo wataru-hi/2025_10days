@@ -106,6 +106,9 @@ float Lerp(float a, float b, float t);
 
 float EaseInOut(float x1, float x2, float t);
 
+float my_min(float a, float b);
+float my_max(float a, float b);
+
 } // namespace MathUtility
 
 } // namespace KamataEngine

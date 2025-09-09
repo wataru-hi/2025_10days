@@ -11,15 +11,24 @@ enum class MapChipType {
 	Block,
 };
 
-
 class MapChip {
 public:
+	struct IndexSet {
+		uint32_t xIndex;
+		uint32_t yIndex;
+	};
+
 	struct Rect {
 		float left;
 		float top;
 		float right;
 		float bottom;
 	};
+
+	static inline const float kBlockWidth = 1.0f;
+	static inline const float kBlockHeight = 1.0f;
+	
+
 	~MapChip();
 
 	void Initialize(std::string file);
@@ -36,7 +45,17 @@ public:
 
 	Vector2 GetScroll() { return scroll_; }
 
+	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
+
+	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
+	MapChipType GetMapChipTypeByPosition(const Vector3& position);
+	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
+
 private:
+	static inline const uint32_t kNumBlockVirtical = 20;
+	static inline const uint32_t kNumBlockHorizontal = 100;
+
 	void ModelCreate();
 	std::vector<std::vector<MapChipType>> mapChipData;
 	std::vector<std::vector<WorldTransform*>> mapChipTransforms_;

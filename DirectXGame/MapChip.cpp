@@ -10,11 +10,10 @@ MapChip::~MapChip() {
 	for (auto line : mapChipTransforms_) {
 		for (auto& sprite : line) {
 			if (sprite) {
-				delete sprite;
+				sprite->~WorldTransform();
 			}
 		}
 	}
-
 }
 
 void MapChip::Initialize(std::string fileName) {
@@ -64,10 +63,25 @@ void MapChip::Draw(const Camera& camera) {
 }
 
 MapChipType MapChip::GetMapChipType(const Vector2& position) { 
+	//int xIndex = static_cast<int>(position.x / BlockSize);
+	//int yIndex = static_cast<int>(position.y / BlockSize);
+	//xIndex = std::max<int>(0, std::min<int>(xIndex, static_cast<int>(mapChipData[0].size()) - 1));
+	//yIndex = std::max<int>(0, std::min<int>(yIndex, static_cast<int>(mapChipData.size()) - 1));
+	//return mapChipData[yIndex][xIndex];
+
+	 // マップデータが空の場合は処理を中止
+	if (mapChipData.empty()) {
+		return MapChipType::Blank; // または適切なデフォルト値を返す
+	}
+
 	int xIndex = static_cast<int>(position.x / BlockSize);
 	int yIndex = static_cast<int>(position.y / BlockSize);
-	xIndex = std::max<int>(0, std::min<int>(xIndex, static_cast<int>(mapChipData[0].size()) - 1));
-	yIndex = std::max<int>(0, std::min<int>(yIndex, static_cast<int>(mapChipData.size()) - 1));
+
+	// 範囲チェックをより安全な方法に修正
+	if (yIndex < 0 || yIndex >= mapChipData.size() || xIndex < 0 || xIndex >= mapChipData[0].size()) {
+		return MapChipType::Blank; // 範囲外はBlankとして扱う
+	}
+
 	return mapChipData[yIndex][xIndex];
 }
 
@@ -85,6 +99,43 @@ MapChip::Rect MapChip::GetMapRect(const Vector2& position) {
 	return rect;
 }
 
+MapChip::IndexSet MapChip::GetMapChipIndexSetByPosition(const Vector3& position) { 
+	IndexSet indexSet = {};
+	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2.0f) / kBlockWidth);
+	indexSet.yIndex = kNumBlockVirtical - 1 - static_cast<uint32_t>(position.y + kBlockHeight / 2.0f / kBlockHeight);
+	return indexSet;
+}
+
+MapChipType MapChip::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
+	if (yIndex >= mapChipData.size() || xIndex >= mapChipData[0].size()) {
+		return MapChipType::Blank; // 範囲外はBlank
+	}
+
+	MapChipType resultChipType = mapChipData.data()[yIndex][xIndex];
+
+	return resultChipType;
+}
+
+MapChipType MapChip::GetMapChipTypeByPosition(const Vector3& position) {
+	IndexSet indexSet = GetMapChipIndexSetByPosition(position);
+	
+	return GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+}
+
+Vector3 MapChip::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVirtical - 1 - yIndex), 0); }
+
+
+MapChip::Rect MapChip::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
+	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
+
+	Rect rect;
+	rect.left = center.x - kBlockWidth / 2.0f;
+	rect.right = center.x + kBlockWidth / 2.0f;
+	rect.bottom = center.y - kBlockWidth / 2.0f;
+	rect.top = center.y + kBlockWidth / 2.0f;
+
+	return rect;
+}
 void MapChip::ModelCreate() {
 	size_t y = 0;
 	// マップの全行数

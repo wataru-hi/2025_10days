@@ -12,5 +12,8 @@ float EaseInOut(float x1, float x2, float t) {
 	return Lerp(x1, x2, easedT);
 }
 
+float my_min(float a, float b) { return (a < b) ? a : b; }
+float my_max(float a, float b) { return (a > b) ? a : b; }
+
 } // namespace MathUtility
 } // namespace KamataEngine

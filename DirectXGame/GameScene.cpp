@@ -3,14 +3,21 @@
 
 
 using namespace KamataEngine;
+GameScene::~GameScene() { 
+
+}
 void GameScene::Initialize() { 
 	camera.Initialize(); 
+
+	
+
+	map = std::make_unique<MapChip>();
+	map->Initialize("Resources/stage1.csv");
 
 	player = std::make_unique<Player>();
 	player->Initialize();
 
-	map = std::make_unique<MapChip>();
-	map->Initialize("Resources/stage1.csv");
+	player->SetMapChipData(map.get());
 }
 
 void GameScene::Update() { 
