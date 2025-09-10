@@ -18,6 +18,4 @@ private:
 	std::unique_ptr<Player> player;
 	MapChip* map;
 
-	Model* testM;
-	WorldTransform wor;
 };

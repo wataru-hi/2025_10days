@@ -15,11 +15,6 @@ void GameScene::Initialize() {
 	player = std::make_unique<Player>();
 	player->Initialize(map);
 
-	testM = Model::CreateFromOBJ("cube");
-	wor.Initialize();
-	wor.translation_ = {0.0f, 0.0f, 0.0f};
-	wor.scale_ = {10.0f, 0.1f, 0.1f};
-	wor.UpdateMatirx();
 }
 
 void GameScene::Update() { 
@@ -33,8 +28,6 @@ void GameScene::Draw() {
 	map->Draw(camera);
 
 	player->Draw(camera);
-
-	testM->Draw(wor, camera);
 
 	Model::PostDraw();
 }

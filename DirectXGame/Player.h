@@ -28,7 +28,10 @@ class MapChip;
 class Player {
 public:
 	Player() {};
-	~Player() { };
+	~Player() { 
+		delete model;
+		model = nullptr;
+	};
 
 	void Initialize(MapChip* mapChip);
 	void Update();
@@ -39,7 +42,7 @@ private:
 	
     void CheckKey();
 
-	void UpdateOnGround(const CollisionMapInfo& info);
+	//void UpdateOnGround(const CollisionMapInfo& info);
 
 	KamataEngine::Vector3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
 
@@ -49,7 +52,7 @@ private:
 	void CheckMapCollisionRight(CollisionMapInfo& info);
 	void CheckMapCollisionLeft(CollisionMapInfo& info);
 
-	std::unique_ptr<KamataEngine::Model> model;
+	KamataEngine::Model* model;
 
 	KamataEngine::WorldTransform worldTransform;
 	KamataEngine::WorldTransform ghostWorldTransform;

@@ -1,8 +1,9 @@
 #pragma once
 #include <KamataEngine.h>
-#include <memory>
 #include <string>
 #include <vector>
+#include <list>
+#include <memory>
 
 using namespace KamataEngine;
 
@@ -13,67 +14,81 @@ enum class MapChipType {
 
 class MapChip {
 public:
-	struct IndexSet {
-		uint32_t xIndex;
-		uint32_t yIndex;
-	};
-
 	struct Rect {
 		float left;
 		float top;
 		float right;
 		float bottom;
 	};
-
-	static inline const float kBlockSize = 2.0f;
-	static inline const float kBlockWidth = kBlockSize;
-	static inline const float kBlockHeight = kBlockSize;
-
+	struct MapChipIndex {
+		int x;
+		int y;
+	};
+	struct MapData {
+		MapChipType type;
+		Sprite* sprite;
+		Sprite* mapSprite;
+	};
 	~MapChip();
 
 	void Initialize(std::string file);
-
+	
 	void Update();
 
 	void Draw(const Camera& camera);
 
+	//void MapDraw();
+
 	MapChipType GetMapChipType(const Vector2& position);
+
+	MapChipType GetMapChipType(const MapChipIndex& index);
 
 	Rect GetMapRect(const Vector2& position);
 
-	void SetPlayerPos(const Vector2& pos) { playerPos_ = pos; }
+	//void SetPlayerPos(const Vector2& pos) { playerPos_ = pos; }
 
-	Vector2 GetScroll() { return scroll_; }
+	MapChipIndex GetMapChipIndex(const Vector2& position);
 
-	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
+	int GetMaxVerticalMapSize() { return static_cast<int>(mapChipData.size()); }
+	int GetMaxHorizontalMapSize() { return static_cast<int>(mapChipData[1].size()); }
 
-	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
-	MapChipType GetMapChipTypeByPosition(const Vector3& position);
-	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
+	float GetMapChipBlockSize() { return BlockSize; }
 
-	std::vector<std::vector<MapChipType>> mapChipData;
+	//void RoundReset(std::string file);
 
 private:
-	/*static inline const uint32_t kNumBlockVirtical = 20;
-	static inline const uint32_t kNumBlockHorizontal = 100;*/
+	void MapCreate(std::string file);
 
-	/*static inline const float kBlockSize = 2.0f;
+	Vector2 GetMapPos(const MapChipIndex& index);
 
-	static inline const float kBlockWidth = kBlockSize;
+private:
+	//void SpriteCreate();
+	void CreateModel();
+	std::vector<std::vector<MapChipType>> mapChipData;
+	std::vector<std::vector<WorldTransform*>> mapChipWorldTransforms_;
+	//std::vector<std::vector<Sprite*>> mapSprites;
+	//std::vector<Sprite*> sprites;
+	//std::vector<Sprite*> mapsprites;
+	//bool isStart =false;
+	//Sprite* payerMapSprite_ = nullptr;
+	//Sprite* backMapSprite_ = nullptr;
+	//std::vector<Sprite*> itemMapSprite;
+	//std::vector<Sprite*> enemyMapSprite;
 
-	static inline const float kBlockHeight = kBlockSize;*/
+	std::string directory = "";
 
-	void ModelCreate();
-	std::vector<std::vector<std::unique_ptr<WorldTransform>>> mapChipTransforms_;
+	int a[100][100];
+	
+	Model* blockModel;
 
 	float BlockSize = 2.0f;
+	float mapBlockSize = 0.0f;
 
 	Vector2 maxMapSize;
+	const float kMapSize = 200.0f;
 
 	Vector2 playerPos_;
 
-	Vector2 scroll_ = {0, 0};
+	//Vector2 scroll_ = {0, 0};
 
-	std::unique_ptr<Model> blockModel_ = nullptr;
 };
