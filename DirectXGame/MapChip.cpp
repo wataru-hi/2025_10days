@@ -118,7 +118,7 @@ void MapChip::CreateModel() {
 		for (size_t x = 0; x < mapChipData[y].size(); ++x) {
 			if (mapChipData[y][x] == MapChipType::Blank) {
 				mapChipWorldTransforms_[y].push_back(nullptr);
-			} else if (mapChipData[y][x] == MapChipType::Block) {
+			} else {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransform->translation_ = {(BlockSize * 0.5f) + (BlockSize * x), (BlockSize * 0.5f) + (BlockSize * (mapChipData.size() - 1 - y)), 0.0f};
