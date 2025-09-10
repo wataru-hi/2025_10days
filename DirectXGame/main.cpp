@@ -28,7 +28,7 @@ void DrawScene();
 
 TitleScene* titleScene = nullptr;
 RuleScene* ruleScene = nullptr;
-GameScene* gameScene = nullptr;
+std::unique_ptr<GameScene> gameScene = std::make_unique<GameScene>();
 ClearScene* clearScene = nullptr;
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -37,10 +37,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	KamataEngine::Initialize(L"3065_Switching of Geist");
 
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
-
-	std::unique_ptr<GameScene>gameScene = std::make_unique<GameScene>();
-
-	gameScene->Initialize();
 
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 
@@ -60,7 +56,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ChangeScene();
 		UpdateScene();
 
-		gameScene->Update();
 
 
 		imGuiManager->End();
@@ -69,7 +64,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		DrawScene();
 		
-		gameScene->Draw();
+		
 
 		imGuiManager->Draw();
 
@@ -107,11 +102,11 @@ void ChangeScene() {
 		if (ruleScene->IsFinished()) {
 			// シーン変更
 			scene = Scene::kGame;
-			// 旧シーンの開放
-			delete gameScene;
-			gameScene = nullptr;
+			
+			gameScene.reset();
 			// 新シーンの生成と初期化
-			gameScene = new GameScene;
+			gameScene = std::make_unique<GameScene>();
+			
 			gameScene->Initialize();
 		}
 		break;
@@ -121,6 +116,7 @@ void ChangeScene() {
 			scene = Scene::kClear;
 			// 旧シーンの開放
 			delete clearScene;
+			gameScene.reset();
 			clearScene = nullptr;
 			// 新シーンの生成と初期化
 			clearScene = new ClearScene;
