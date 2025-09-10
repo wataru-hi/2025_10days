@@ -28,8 +28,8 @@ void MapChip::Initialize(std::string fileName) {
 	MapCreate(fileName);
 	CreateModel();
 
-	blockModel = Model::CreateFromOBJ("cube");
-	GoalModel = Model::CreateFromOBJ("cube");
+	blockModel = Model::CreateFromOBJ("block");
+	GoalModel = Model::CreateFromOBJ("door");
 }
 
 void MapChip::Update() {}

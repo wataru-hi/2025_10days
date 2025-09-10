@@ -13,7 +13,7 @@ void Player::Initialize(MapChip* mapChip) {
 
 	// ゴーストモード用のモデルを読み込む（例: "ghostPlayer"）
 	// 同じモデルを使う場合は、normalModeModelをそのまま使用
-	ghostModeModel = Model::CreateFromOBJ("player");
+	ghostModeModel = Model::CreateFromOBJ("ghost");
 
 	worldTransform.Initialize();
 	worldTransform.scale_ = Vector3{1.5f, 1.5f, 1.5f};

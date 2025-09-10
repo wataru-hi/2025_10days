@@ -154,12 +154,16 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClearScene.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FolloCamera.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="MathUtilityEx.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RuleScene.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -262,10 +266,14 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClearScene.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="FolloCamera.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RuleScene.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
