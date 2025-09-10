@@ -109,6 +109,8 @@ float EaseInOut(float x1, float x2, float t);
 float my_min(float a, float b);
 float my_max(float a, float b);
 
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+
 } // namespace MathUtility
 
 } // namespace KamataEngine

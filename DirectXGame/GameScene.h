@@ -1,10 +1,9 @@
 #pragma once
-#include <KamataEngine.h>
-#include "Player.h"
+#include "FolloCamera.h"
 #include "MapChip.h"
+#include "Player.h"
+#include <KamataEngine.h>
 
-
-//class Player;
 class GameScene {
 public:
 	~GameScene();
@@ -12,10 +11,14 @@ public:
 	void Update();
 	void Draw();
 
+	bool IsGoalPlayer();
+
+
 private:
-	KamataEngine::Camera camera;
+	std::unique_ptr<FollowCamera> followCamera_; // FollowCamera のインスタンス
 
 	std::unique_ptr<Player> player;
 	MapChip* map;
 
+	bool isGoal_ = false;
 };

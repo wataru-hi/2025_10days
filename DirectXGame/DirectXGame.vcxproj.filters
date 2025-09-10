@@ -36,6 +36,9 @@
     <ClCompile Include="MapChip.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="FolloCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
@@ -86,6 +89,7 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Resources\mapTest2.csv" />
+    <None Include="Resources\Stage1.csv" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameScene.h">
@@ -95,6 +99,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="MapChip.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FolloCamera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

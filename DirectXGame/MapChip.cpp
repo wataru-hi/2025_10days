@@ -16,44 +16,58 @@ MapChip::~MapChip() {
 		}
 	}
 
-	delete blockModel;
+
+
 	blockModel = nullptr;
+	GoalModel = nullptr;
 }
 
 void MapChip::Initialize(std::string fileName) {
 	directory = fileName;
-	
+
 	MapCreate(fileName);
 	CreateModel();
 
 	blockModel = Model::CreateFromOBJ("cube");
-
+	GoalModel = Model::CreateFromOBJ("cube");
 }
 
-void MapChip::Update() {
-	
-}
+void MapChip::Update() {}
 
 void MapChip::Draw(const Camera& camera) {
+	int y = 0; // 行のインデックスを初期化
 	for (const auto& line : mapChipWorldTransforms_) {
+		int x = 0; // 列のインデックスを初期化
 		for (const auto& worldTransform : line) {
 			if (worldTransform) {
-				blockModel->Draw(*worldTransform, camera);
-			}
-		}
-	}
+				// 正しいインデックスを使ってマップチップのタイプを取得
+				MapChipType type = GetMapChipType(MapChipIndex{x, y});
 
+				if (MapChipType::Block == type) {
+					blockModel->Draw(*worldTransform, camera);
+				}
+				if (MapChipType::Goal == type) {
+					GoalModel->Draw(*worldTransform, camera);
+				}
+			}
+			x++;
+		}
+		y++;
+	}
 }
 
 
-MapChipType MapChip::GetMapChipType(const Vector2& position) {
+MapChipType MapChip::GetMapChipType(const Vector3& position) {
 	MapChipIndex index = GetMapChipIndex(position);
+	if (index.y < 0 || index.y >= mapChipData.size() || index.x < 0 || index.x >= mapChipData[0].size()) {
+		return MapChipType::Blank; // 範囲外の場合はBlankを返す
+	}
 	return mapChipData[index.y][index.x];
 }
 
 MapChipType MapChip::GetMapChipType(const MapChipIndex& index) { return mapChipData[index.y][index.x]; }
 
-MapChip::Rect MapChip::GetMapRect(const Vector2& position) {
+MapChip::Rect MapChip::GetMapRect(const Vector3& position) {
 	MapChipIndex index = GetMapChipIndex(position);
 	Rect rect;
 	rect.top = index.y * BlockSize;
@@ -64,17 +78,16 @@ MapChip::Rect MapChip::GetMapRect(const Vector2& position) {
 	return rect;
 }
 
-MapChip::MapChipIndex MapChip::GetMapChipIndex(const Vector2& position) {
+MapChip::MapChipIndex MapChip::GetMapChipIndex(const Vector3& position) {
 	MapChipIndex index;
 	index.x = static_cast<int>(position.x / BlockSize);
-	index.y = static_cast<int>(position.y / BlockSize);
+	index.y = GetMaxVerticalMapSize() - 1 - static_cast<int>(position.y / BlockSize);
 	index.x = std::clamp<int>(index.x, 0, static_cast<int>(mapChipData[0].size()) - 1);
 	index.y = std::clamp<int>(index.y, 0, static_cast<int>(mapChipData.size()) - 1);
 	return index;
 }
 
 void MapChip::MapCreate(std::string fileName) {
-	// ファイルを開く
 	std::ifstream file(fileName);
 	if (!file) {
 		std::cerr << "ファイルを開けませんでした。" << std::endl;
@@ -82,53 +95,35 @@ void MapChip::MapCreate(std::string fileName) {
 	}
 
 	std::string line;
-	// 行ごとに読み込み
 	while (std::getline(file, line)) {
 		mapChipData.push_back(std::vector<MapChipType>());
 		int lineNumber = static_cast<int>(mapChipData.size()) - 1;
-		std::stringstream ss(line); // 行をストリーム化
+		std::stringstream ss(line);
 		std::string cell;
 
-		// カンマ区切りで分解
 		while (std::getline(ss, cell, ',')) {
-			// 文字列を整数に変換
 			int value = std::stoi(cell);
 			mapChipData[lineNumber].push_back(static_cast<MapChipType>(value));
 		}
 	}
-	// マップの最大サイズ計算
 	maxMapSize.x = static_cast<int>(mapChipData[0].size()) * BlockSize;
 	maxMapSize.y = static_cast<int>(mapChipData.size()) * BlockSize;
-	// スプライト部分生成
-	//SpriteCreate();
 }
 
-Vector2 MapChip::GetMapPos(const MapChipIndex& index) { return Vector2(1280.0f - kMapSize + mapBlockSize * index.x + mapBlockSize * 0.5f, mapBlockSize * index.y + mapBlockSize * 0.5f); }
+Vector3 MapChip::GetMapPos(const MapChipIndex& index) { return Vector3(BlockSize * index.x, BlockSize * index.y, 0.0f); }
 
 void MapChip::CreateModel() {
-
-	//mapBlockSize = kMapSize / static_cast<float>(mapChipData.size());
-	// 不要なコメントは削除
-	for (auto line : mapChipData) {
+	for (size_t y = 0; y < mapChipData.size(); ++y) {
 		mapChipWorldTransforms_.push_back(std::vector<WorldTransform*>());
-		int lineIndex = static_cast<int>(mapChipWorldTransforms_.size()) - 1;
-
-		for (auto cell : line) {
-			int cellIndex = static_cast<int>(mapChipWorldTransforms_[lineIndex].size());
-
-			if (cell == MapChipType::Blank) {
-				mapChipWorldTransforms_[lineIndex].push_back(nullptr);
-				a[cellIndex][lineIndex] = 0;
-			} else if (cell == MapChipType::Block) {
+		for (size_t x = 0; x < mapChipData[y].size(); ++x) {
+			if (mapChipData[y][x] == MapChipType::Blank) {
+				mapChipWorldTransforms_[y].push_back(nullptr);
+			} else if (mapChipData[y][x] == MapChipType::Block) {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
-				worldTransform->translation_ = {
-					(BlockSize * 0.5f) * cellIndex,
-					(BlockSize * 0.5f) * (static_cast<int>(mapChipData.size()) - 1 - lineIndex),
-					0.0f};
+				worldTransform->translation_ = {(BlockSize * 0.5f) + (BlockSize * x), (BlockSize * 0.5f) + (BlockSize * (mapChipData.size() - 1 - y)), 0.0f};
 				worldTransform->UpdateMatirx();
-				mapChipWorldTransforms_[lineIndex].push_back(worldTransform);
-				a[cellIndex][lineIndex] = 1;
+				mapChipWorldTransforms_[y].push_back(worldTransform);
 			}
 		}
 	}

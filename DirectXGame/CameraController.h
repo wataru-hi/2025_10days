@@ -1,12 +1,15 @@
 #pragma once
+#include <KamataEngine.h>
 
-#include <ViewProjection.h>
+using namespace KamataEngine;
 
 class Player;
 
 // カメラ制御
 class CameraController {
 public:
+	CameraController() = default;
+
 	struct Rect {
 		float left = 0.0f;
 		float right = 1.0f;
@@ -24,10 +27,10 @@ public:
 	void SetMovableArea(const Rect& area) { movableArea_ = area; }
 
 	// getter
-	const ViewProjection& GetViewProjection() const { return viewProjection_; }
+	const Camera & GetCamera() const { return camera_; }
 
 private:
-	ViewProjection viewProjection_;
+	Camera camera_;
 	Player* target_ = nullptr;
 	Rect movableArea_ = {0, 100, 0, 100};
 	Vector3 destination_;
