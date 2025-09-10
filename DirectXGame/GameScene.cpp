@@ -32,9 +32,6 @@ void GameScene::Update() {
 	player->Update();
 	map->Update();
 
-	if (isGoal_) {
-		audio_->GetInstance()->StopWave(voiceHandle_); 
-	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_P) && flag == 0) {
 		voiceHandle = Audio::GetInstance()->PlayWave(openDoorSoundHandle_, true);
@@ -68,3 +65,5 @@ void GameScene::Draw() {
 }
 
 bool GameScene::IsGoalPlayer() { return isGoal_; }
+
+void GameScene::AudioStop() { audio_->GetInstance()->StopWave(voiceHandle_); }

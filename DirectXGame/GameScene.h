@@ -18,7 +18,7 @@ public:
 	void Draw();
 
 	bool IsGoalPlayer();
-
+	void AudioStop();
 	float stopTimer = 0.0f;
 
 private:

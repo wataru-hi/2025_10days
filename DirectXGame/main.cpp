@@ -116,6 +116,7 @@ void ChangeScene() {
 			scene = Scene::kClear;
 			// 旧シーンの開放
 			delete clearScene;
+			gameScene->AudioStop();
 			gameScene.reset();
 			clearScene = nullptr;
 			// 新シーンの生成と初期化
