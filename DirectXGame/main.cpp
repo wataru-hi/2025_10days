@@ -9,7 +9,7 @@ using namespace KamataEngine;
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	
-	KamataEngine::Initialize(L"LE3D_12_ヒガ_ワタル");
+	KamataEngine::Initialize(L"a");
 
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <KamataEngine.h>
+#include "AABB.h"
 
 enum class LRDirection {
 	kRight,
@@ -29,24 +30,24 @@ public:
 	Player() {};
 	~Player() { };
 
-	void Initialize();
+	void Initialize(MapChip* mapChip);
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
-
-	void SetMapChipData(MapChip* mapChip) { mapChipData = std::unique_ptr<MapChip>(mapChip); }
 
 private:
 	void InputMove();
 	
     void CheckKey();
 
+	void UpdateOnGround(const CollisionMapInfo& info);
+
 	KamataEngine::Vector3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
 
-	void CheckMapCollision(CollisionMapInfo info);
-	void CheckMapCollisionUp(CollisionMapInfo info);
-	void CheckMapCollisionDown(CollisionMapInfo info);
-	void CheckMapCollisionRight(CollisionMapInfo info);
-	void CheckMapCollisionLeft(CollisionMapInfo info);
+	void CheckMapCollision(CollisionMapInfo& info);
+	void CheckMapCollisionUp(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
 
 	std::unique_ptr<KamataEngine::Model> model;
 
@@ -56,7 +57,7 @@ private:
 	KamataEngine::ObjectColor* color;
 
 
-	 std::unique_ptr<MapChip> mapChipData;
+	std::unique_ptr<MapChip> mapChipData;
 
 
 	KamataEngine::Vector3 velocity_ = {};
@@ -65,15 +66,23 @@ private:
 
 	bool isGhostMode;
 
-	static inline const float kAttenuation = 0.08f;		// 横移動加速度
-	static inline const float kLimitRusSpeed = 0.5f;	// 横移動最大速度
-	static inline const float kDeceleration = 0.2f;		// 横移動減速速度
-	static inline const float kVerticalAttenuation = 0.08f;  // 上下移動加速度
-	static inline const float kVerticalLimitRusSpeed = 0.4f; // 上下移動最大速度
+	static inline const float kAttenuation = 0.08f;       // 横移動の加速度
+	static inline const float kLimitRusSpeed = 0.5f;      // 横移動の最大速度
+	static inline const float kDeceleration = 0.2f;       // 横移動の減速速度
+	static inline const float kVerticalAttenuation = 0.08f;  // 上下移動の加速度（ゴーストモード用）
+	static inline const float kVerticalLimitRusSpeed = 0.4f; // 上下移動の最大速度（ゴーストモード用）
+	static inline const float kGroundSearchHeight = 0.06f;   // 地面を探知する高さ
+	static inline const float kAttenuationLanding = 0.06f;   // 着地時の減速速度
+	static inline const float kJumpAcceleration = 20.0f;     // ジャンプ力
 
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.04f;
+
+	static inline const float kGravityAcceleration = 0.98f; // 重力加速度
+	static inline const float kLimitFallSpeed = 0.5f;       // 落下速度の最大値
+
+	static inline const float kWidth = 1.0f;  // プレイヤーの幅
+	static inline const float kHeight = 0.8f; // プレイヤーの高さ
+	static inline const float kBlank = 0.04f;  // 当たり判定の余白
+
 
 	float turnTimer_ = 0.0f; 
 	float turnFirstRotationY_ = 0.0f;
@@ -81,11 +90,14 @@ private:
 
 	static inline const KamataEngine::Vector4 GhostModeColor = KamataEngine::Vector4{1.0f, 1.0f, 1.0f, 0.6f};
 
+	bool onGround_;
 
 	bool isPushRightMoveKey;
 	bool isPushLeftMoveKey;
 	bool isPushUpMoveKey; 
 	bool isPushDownMoveKey;
+
+
 
 	bool isPushGhostModeKey;
 };

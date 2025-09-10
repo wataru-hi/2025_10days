@@ -4,24 +4,27 @@
 
 using namespace KamataEngine;
 GameScene::~GameScene() { 
-
+	delete map;
 }
-void GameScene::Initialize() { 
-	camera.Initialize(); 
+void GameScene::Initialize() {
+	camera.Initialize();
 
-	
-
-	map = std::make_unique<MapChip>();
-	map->Initialize("Resources/stage1.csv");
+	map = new MapChip();
+	map->Initialize("Resources/mapTest2.csv");
 
 	player = std::make_unique<Player>();
-	player->Initialize();
+	player->Initialize(map);
 
-	player->SetMapChipData(map.get());
+	testM = Model::CreateFromOBJ("cube");
+	wor.Initialize();
+	wor.translation_ = {0.0f, 0.0f, 0.0f};
+	wor.scale_ = {10.0f, 0.1f, 0.1f};
+	wor.UpdateMatirx();
 }
 
 void GameScene::Update() { 
 	player->Update(); 
+	map->Update();
 }
 
 void GameScene::Draw() { 
@@ -30,6 +33,8 @@ void GameScene::Draw() {
 	map->Draw(camera);
 
 	player->Draw(camera);
+
+	testM->Draw(wor, camera);
 
 	Model::PostDraw();
 }

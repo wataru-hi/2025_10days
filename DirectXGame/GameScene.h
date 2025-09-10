@@ -16,5 +16,8 @@ private:
 	KamataEngine::Camera camera;
 
 	std::unique_ptr<Player> player;
-	std::unique_ptr<MapChip> map;
+	MapChip* map;
+
+	Model* testM;
+	WorldTransform wor;
 };

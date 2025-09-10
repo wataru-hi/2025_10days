@@ -1,8 +1,8 @@
 #pragma once
 #include <KamataEngine.h>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 using namespace KamataEngine;
 
@@ -25,14 +25,14 @@ public:
 		float bottom;
 	};
 
-	static inline const float kBlockWidth = 1.0f;
-	static inline const float kBlockHeight = 1.0f;
-	
+	static inline const float kBlockSize = 2.0f;
+	static inline const float kBlockWidth = kBlockSize;
+	static inline const float kBlockHeight = kBlockSize;
 
 	~MapChip();
 
 	void Initialize(std::string file);
-	
+
 	void Update();
 
 	void Draw(const Camera& camera);
@@ -52,14 +52,21 @@ public:
 	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
 	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 
+	std::vector<std::vector<MapChipType>> mapChipData;
+
 private:
-	static inline const uint32_t kNumBlockVirtical = 20;
-	static inline const uint32_t kNumBlockHorizontal = 100;
+	/*static inline const uint32_t kNumBlockVirtical = 20;
+	static inline const uint32_t kNumBlockHorizontal = 100;*/
+
+	/*static inline const float kBlockSize = 2.0f;
+
+	static inline const float kBlockWidth = kBlockSize;
+
+	static inline const float kBlockHeight = kBlockSize;*/
 
 	void ModelCreate();
-	std::vector<std::vector<MapChipType>> mapChipData;
-	std::vector<std::vector<WorldTransform*>> mapChipTransforms_;
-	
+	std::vector<std::vector<std::unique_ptr<WorldTransform>>> mapChipTransforms_;
+
 	float BlockSize = 2.0f;
 
 	Vector2 maxMapSize;
@@ -69,5 +76,4 @@ private:
 	Vector2 scroll_ = {0, 0};
 
 	std::unique_ptr<Model> blockModel_ = nullptr;
-
 };
